@@ -51,8 +51,8 @@ function isValidKey(key) {
 function insertLetter(i, letter) {
     var letterBoxes = $('#currentWord').children();
     var letterBox = letterBoxes[i];
-    $(letterBox).append(letter);
-    
+     $(letterBox).append(letter);
+    numCorrect++;
 }
 
 
@@ -61,15 +61,22 @@ document.onkeyup = function(event) {
     var letter = event.key.toLowerCase();
     
     if(isValidKey(letter)) {
-        var index = correctWord.indexOf(letter);
+        var indices = [];
+        for(var i=0; i < correctWord.length; i++) {
+            if (correctWord[i] === letter) {
+                indices.push(i);
+            }
+        }
         
-        if(index > -1) {
-            insertLetter(index, letter);
-            guessesLeft--;
-            changeHTML();
-            lettersGuessed.push(letter);
-            numCorrect++;
+        if(indices.length > 0) {
+            indices.forEach(function(i) {
+            insertLetter(i, letter);
             
+        });
+        guessesLeft--;
+        changeHTML();  
+        lettersGuessed.push(letter);
+        
         } else {
             wrongLetters.push(letter);
             guessesLeft--;
@@ -113,7 +120,7 @@ function reset() {
 function endGame() {
     
     if(guessesLeft == 0 && numCorrect != correctWord.length) {
-        reset();
+        //write message to page
     }
 }
 
@@ -127,16 +134,26 @@ function winGame() {
     
 }
 
+//$(document).ready(function(){
+  //  $('#buttonreset').click( function() {
+   //             reset();
+                
+  //         });
+//});
+
+        
+
 
 
 
 $(document).ready(function(){
+    
     pickWord();
     insertWord();
     changeHTML();
     insertImage();
+});
 
-   }); 
 
 
 //how to delay, make an action last longer before moving to next line in function so that we can write 'you lose' when guesses run out and write to page the correct word/change image when guessed right before the game resets
@@ -145,6 +162,4 @@ $(document).ready(function(){
 
 //change image when word is guessed correctly
 
-//account for when a word has a letter in it twice
-//add option to reset game with single key
-//make button to stay on page for reset
+//make button to stay on page for reset -- wins no longer track after reset button is used...why?
