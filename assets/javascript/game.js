@@ -13,13 +13,14 @@
 
 var wins = 0;
 var correctWord;
-var guessesLeft = 10;
+var guessesLeft = 15;
 var wrongLetters = [];
 var lettersGuessed = [];
 var alphabet = 'abcdefghijklmnopqrstuvwxyz'.split('');
+var numCorrect = 0;
 
 function pickWord() {
-    var wordPool = ['crowley', 'rowena'];
+    var wordPool = ['crowley', 'rowena', 'sulfur', 'castiel', 'leviathan', 'impala', 'hunter', 'purgatory' ];
     var randomIndex = Math.floor(Math.random()*wordPool.length);
     correctWord = wordPool[randomIndex];
     
@@ -51,39 +52,99 @@ function insertLetter(i, letter) {
     var letterBoxes = $('#currentWord').children();
     var letterBox = letterBoxes[i];
     $(letterBox).append(letter);
-
+    
 }
 
 
 
 document.onkeyup = function(event) {
     var letter = event.key.toLowerCase();
-
+    
     if(isValidKey(letter)) {
         var index = correctWord.indexOf(letter);
+        
         if(index > -1) {
             insertLetter(index, letter);
-            //decrement guesses left
-            // put into letters guessed array
+            guessesLeft--;
+            changeHTML();
+            lettersGuessed.push(letter);
+            numCorrect++;
+            
         } else {
-            //add to wrongletters
-            // decrement gusses left
-            // put into letters guessed
+            wrongLetters.push(letter);
+            guessesLeft--;
+            changeHTML();
+            lettersGuessed.push(letter);
         }
     } else {
-        // do nothing
+        return false;
     }
+    endGame();
+    winGame();
+}
+
+function changeHTML() {
+    $('#wins').text('Wins: ' + wins);
+    $('#guessLeft').text('Guesses Remaining: ' + guessesLeft);
+    $('#letterGuessed').text('Wrong Letters Already Guessed: ' + wrongLetters);
+}
+
+
+function insertImage() {
+    var img=$("<img />").attr("src","assets/images/starterimage.jpg");
+    img.appendTo($("#wordImage"));
+}
+
+function reset() {
+     
+     correctWord;
+     guessesLeft = 15;
+     wrongLetters = [];
+     lettersGuessed = [];
+     alphabet = 'abcdefghijklmnopqrstuvwxyz'.split('');
+     $('#currentWord').empty();
+     pickWord();
+     insertWord();
+     changeHTML();
+}
+
+
+
+function endGame() {
+    
+    if(guessesLeft == 0 && numCorrect != correctWord.length) {
+        reset();
+    }
+}
+
+function winGame() {
+
+    if(numCorrect == correctWord.length) {
+        wins++;
+        changeHTML();
+        
+    }
+    
 }
 
 
 
 
-
-
- $(document).ready(function(){
+$(document).ready(function(){
     pickWord();
     insertWord();
+    changeHTML();
+    insertImage();
 
    }); 
 
 
+//how to delay, make an action last longer before moving to next line in function so that we can write 'you lose' when guesses run out and write to page the correct word/change image when guessed right before the game resets
+
+//need to add element for these to be written
+
+//change image when word is guessed correctly
+
+//account for when a word has a letter in it twice
+//add option to reset game with single key
+//make button to stay on page for reset
