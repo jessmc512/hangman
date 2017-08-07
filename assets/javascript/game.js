@@ -18,9 +18,10 @@ var wrongLetters = [];
 var lettersGuessed = [];
 var alphabet = 'abcdefghijklmnopqrstuvwxyz'.split('');
 var numCorrect = 0;
+var img= $("<img />").attr("src","assets/images/starterimage.jpg");
 
 function pickWord() {
-    var wordPool = ['crowley', 'rowena', 'sulfur', 'castiel', 'leviathan', 'impala', 'hunter', 'purgatory' ];
+    var wordPool = ['crowley', 'rowena', 'castiel', 'leviathan', 'impala', 'hunter', 'purgatory' ];
     var randomIndex = Math.floor(Math.random()*wordPool.length);
     correctWord = wordPool[randomIndex];
     
@@ -93,12 +94,17 @@ document.onkeyup = function(event) {
 function changeHTML() {
     $('#wins').text('Wins: ' + wins);
     $('#guessLeft').text('Guesses Remaining: ' + guessesLeft);
-    $('#letterGuessed').text('Wrong Letters Already Guessed: ' + wrongLetters);
+    $('#letterGuessed').text('Wrong Letters: ' + wrongLetters);
 }
 
 
 function insertImage() {
-    var img=$("<img />").attr("src","assets/images/starterimage.jpg");
+    img.appendTo($("#wordImage"));
+}
+
+function insertWordImage() {
+    img = $("<img />").attr("src", "assets/images/" + correctWord + ".jpg");
+    $('#wordImage').empty();
     img.appendTo($("#wordImage"));
 }
 
@@ -109,6 +115,7 @@ function reset() {
      wrongLetters = [];
      lettersGuessed = [];
      alphabet = 'abcdefghijklmnopqrstuvwxyz'.split('');
+     numCorrect =0;
      $('#currentWord').empty();
      pickWord();
      insertWord();
@@ -120,7 +127,7 @@ function reset() {
 function endGame() {
     
     if(guessesLeft == 0 && numCorrect != correctWord.length) {
-        //write message to page
+        //game over image function
     }
 }
 
@@ -129,17 +136,20 @@ function winGame() {
     if(numCorrect == correctWord.length) {
         wins++;
         changeHTML();
+        insertWordImage();
         
     }
     
 }
 
-//$(document).ready(function(){
-  //  $('#buttonreset').click( function() {
-   //             reset();
+
+
+$(document).ready(function(){
+    $('#buttonreset').click( function() {
+                reset();
                 
-  //         });
-//});
+           });
+});
 
         
 
@@ -156,10 +166,10 @@ $(document).ready(function(){
 
 
 
-//how to delay, make an action last longer before moving to next line in function so that we can write 'you lose' when guesses run out and write to page the correct word/change image when guessed right before the game resets
 
-//need to add element for these to be written
+
+//need to add element for messages (lose-game over, win-correctword) to be written
 
 //change image when word is guessed correctly
 
-//make button to stay on page for reset -- wins no longer track after reset button is used...why?
+//reset breaks win counter...
